@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -31,8 +32,13 @@ namespace WebAPI.Controllers
         }
 
         // POST: api/Corona
-        public void Post([FromBody]string value)
+        public string Post([FromBody]Datum value)
         {
+            // Acquiring connection with database
+            CoronaOperations coop = new CoronaOperations();
+
+            // Send POST request, returns message saying whether insert was sucesfull or not
+            return coop.InsertNewRecord(value) == true ? "Successful" : "Error";
         }
 
         // PUT: api/Corona/5

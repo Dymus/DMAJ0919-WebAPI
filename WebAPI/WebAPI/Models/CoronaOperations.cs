@@ -46,5 +46,38 @@ namespace WebAPI.Models
             }
             return (theReply);
         }
+
+        public Boolean InsertNewRecord(Datum newRecord)
+        {
+            SqlConnectionStringBuilder connString = new SqlConnectionStringBuilder();
+            connString.UserID = "sa";
+            connString.Password = "Technology3";
+            connString.DataSource = "l2.1081496.ucnit20.eu";
+            connString.IntegratedSecurity = false; // if true then windows authentication
+            connString.InitialCatalog = "Corona";
+
+            using (SqlConnection connDB = new SqlConnection(connString.ConnectionString))
+            {
+                connDB.Open();
+                int rowsAffected = -1;
+                try
+                {
+                    string pQuery = "INSERT INTO theStats (countrycode, date, cases, deaths, recovered)";
+                    pQuery += " VALUES (@countrycode, @date, @cases, @deaths, @recovered)";
+                    SqlCommand myCommand = new SqlCommand(pQuery, connDB);
+                    myCommand.Parameters.AddWithValue("@countrycode", newRecord.countrycode);
+                    myCommand.Parameters.AddWithValue("@date", newRecord.date);
+                    myCommand.Parameters.AddWithValue("@cases", newRecord.cases);
+                    myCommand.Parameters.AddWithValue("@deaths", newRecord.deaths);
+                    myCommand.Parameters.AddWithValue("@recovered", newRecord.recovered);
+                    rowsAffected = myCommand.ExecuteNonQuery();           
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+                return rowsAffected == 1 ? true : false;
+            }
+        }
     }
 }
